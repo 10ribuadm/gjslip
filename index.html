@@ -97,77 +97,77 @@
         </div>
     </div>
 
-    <script>
-        // Data JSON (Bisa dipindah ke file eksternal jika mau)
-        const data = {
-            "perusahaan": {
-                "nama": "PT BANGKET COF MEDIA",
-                "bidang": "Application Dev • Advertising • Networking • Starlink Installation",
-                "alamat": "Jerowaru, Lombok Timur, Indonesia"
-            },
-            "slip_detail": {
-                "nomor_referensi": "BCM/SLP/2026/03/089",
-                "periode": "Februari 2026",
-                "tanggal_cetak": "01 Maret 2026"
-            },
-            "karyawan": {
-                "nama": "Falahw",
-                "jabatan": "Senior Network Engineer & Web Developer",
-                "status": "Pegawai Tetap"
-            },
-            "penghasilan": {
-                "Gaji Pokok": 8500000,
-                "Tunjangan Jabatan": 1500000,
-                "Tunjangan Transport": 1000000,
-                "Bonus Proyek": 500000
-            },
-            "potongan": {
-                "BPJS Kesehatan (1%)": 110000,
-                "BPJS Ketenagakerjaan (2%)": 150000,
-                "PPh 21": 0
-            }
-        };
-
-        function formatRupiah(num) {
-            return "Rp " + num.toLocaleString('id-ID');
+<script>
+    // Data JSON Terupdate
+    const data = {
+        "perusahaan": {
+            "nama": "PT BANGKET COF MEDIA",
+            "bidang": "Application Dev • Advertising • Networking • Starlink Installation",
+            "alamat": "Jerowaru, Lombok Timur, Indonesia"
+        },
+        "slip_detail": {
+            "nomor_referensi": "BCM/SLP/2026/03/089",
+            "periode": "Februari 2026",
+            "tanggal_cetak": "01 Maret 2026"
+        },
+        "karyawan": {
+            "nama": "Asrul Sarkawi, S.Kom", // Nama diperbarui
+            "jabatan": "Senior Network Engineer & Web Developer",
+            "status": "Pegawai Tetap"
+        },
+        "penghasilan": {
+            "Gaji Pokok": 8500000,
+            "Tunjangan Jabatan": 1500000,
+            "Tunjangan Transport": 1000000,
+            "Bonus Proyek": 500000
+        },
+        "potongan": {
+            "BPJS Kesehatan (1%)": 110000,
+            "BPJS Ketenagakerjaan (2%)": 150000,
+            "PPh 21": 0
         }
+    };
 
-        // Render Data
-        document.getElementById('comp-name').innerText = data.perusahaan.nama;
-        document.getElementById('comp-fields').innerText = data.perusahaan.bidang;
-        document.getElementById('comp-address').innerText = data.perusahaan.alamat;
-        document.getElementById('comp-label').innerText = data.perusahaan.nama;
-        
-        document.getElementById('slip-ref').innerText = "Ref: " + data.slip_detail.nomor_referensi;
-        document.getElementById('slip-period').innerText = data.slip_detail.periode;
-        document.getElementById('print-date').innerText = "Jerowaru, " + data.slip_detail.tanggal_cetak;
+    function formatRupiah(num) {
+        return "Rp " + num.toLocaleString('id-ID');
+    }
 
-        document.getElementById('emp-name').innerText = data.karyawan.nama;
-        document.getElementById('sign-name').innerText = data.karyawan.nama;
-        document.getElementById('emp-pos').innerText = data.karyawan.jabatan;
-        document.getElementById('emp-status').innerText = data.karyawan.status;
+    // Render Data ke HTML
+    document.getElementById('comp-name').innerText = data.perusahaan.nama;
+    document.getElementById('comp-fields').innerText = data.perusahaan.bidang;
+    document.getElementById('comp-address').innerText = data.perusahaan.alamat;
+    document.getElementById('comp-label').innerText = data.perusahaan.nama;
+    
+    document.getElementById('slip-ref').innerText = "Ref: " + data.slip_detail.nomor_referensi;
+    document.getElementById('slip-period').innerText = data.slip_detail.periode;
+    document.getElementById('print-date').innerText = "Jerowaru, " + data.slip_detail.tanggal_cetak;
 
-        let totalE = 0;
-        let earnHtml = "";
-        for (let item in data.penghasilan) {
-            totalE += data.penghasilan[item];
-            earnHtml += `<div class="flex justify-between"><span>${item}</span><span>${formatRupiah(data.penghasilan[item])}</span></div>`;
-        }
-        document.getElementById('list-earnings').innerHTML = earnHtml;
-        document.getElementById('total-earnings').innerText = formatRupiah(totalE);
+    document.getElementById('emp-name').innerText = data.karyawan.nama;
+    document.getElementById('sign-name').innerText = data.karyawan.nama;
+    document.getElementById('emp-pos').innerText = data.karyawan.jabatan;
+    document.getElementById('emp-status').innerText = data.karyawan.status;
 
-        let totalD = 0;
-        let deductHtml = "";
-        for (let item in data.potongan) {
-            totalD += data.potongan[item];
-            deductHtml += `<div class="flex justify-between"><span>${item}</span><span>${formatRupiah(data.potongan[item])}</span></div>`;
-        }
-        document.getElementById('list-deductions').innerHTML = deductHtml;
-        document.getElementById('total-deductions').innerText = formatRupiah(totalD);
+    let totalE = 0;
+    let earnHtml = "";
+    for (let item in data.penghasilan) {
+        totalE += data.penghasilan[item];
+        earnHtml += `<div class="flex justify-between"><span>${item}</span><span>${formatRupiah(data.penghasilan[item])}</span></div>`;
+    }
+    document.getElementById('list-earnings').innerHTML = earnHtml;
+    document.getElementById('total-earnings').innerText = formatRupiah(totalE);
 
-        const thp = totalE - totalD;
-        document.getElementById('thp-amount').innerText = formatRupiah(thp);
-        document.getElementById('terbilang').innerText = "# Sebelas Juta Dua Ratus Empat Puluh Ribu Rupiah #";
-    </script>
+    let totalD = 0;
+    let deductHtml = "";
+    for (let item in data.potongan) {
+        totalD += data.potongan[item];
+        deductHtml += `<div class="flex justify-between"><span>${item}</span><span>${formatRupiah(data.potongan[item])}</span></div>`;
+    }
+    document.getElementById('list-deductions').innerHTML = deductHtml;
+    document.getElementById('total-deductions').innerText = formatRupiah(totalD);
+
+    const thp = totalE - totalD;
+    document.getElementById('thp-amount').innerText = formatRupiah(thp);
+    document.getElementById('terbilang').innerText = "# Sebelas Juta Dua Ratus Empat Puluh Ribu Rupiah #";
+</script>
 </body>
 </html>
