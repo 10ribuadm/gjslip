@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Slip Gaji - PT BANGKET COF MEDIA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            body { background: white; }
+            .no-print { display: none; }
+            .print-area { 
+                box-shadow: none !important; 
+                margin: 0 !important; 
+                border: none !important;
+            }
+        }
+        .slip-font { font-family: 'Courier New', Courier, monospace; }
+    </style>
+</head>
+<body class="bg-gray-100 py-10">
+
+    <div class="max-w-4xl mx-auto mb-6 no-print flex justify-between items-center px-4">
+        <h1 class="text-xl font-bold text-gray-700">Generator Slip Gaji v1.0</h1>
+        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow-lg transition">
+            Cetak ke PDF
+        </button>
+    </div>
+
+    <div id="app" class="max-w-[21cm] mx-auto bg-white p-10 shadow-2xl border border-gray-200 print-area">
+        <div class="flex justify-between border-b-4 border-black pb-4">
+            <div>
+                <h2 class="text-2xl font-black tracking-tighter" id="comp-name"></h2>
+                <p class="text-xs uppercase font-bold" id="comp-fields"></p>
+                <p class="text-xs italic" id="comp-address"></p>
+            </div>
+            <div class="text-right">
+                <div class="bg-black text-white px-3 py-1 font-bold text-sm mb-1 uppercase">Slip Gaji Resmi</div>
+                <p class="text-[10px] text-gray-500" id="slip-ref"></p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 my-6 text-sm">
+            <div class="flex flex-col gap-1">
+                <div class="flex"><span class="w-32 font-semibold">Nama Karyawan</span>: <span id="emp-name" class="ml-2"></span></div>
+                <div class="flex"><span class="w-32 font-semibold">Jabatan</span>: <span id="emp-pos" class="ml-2 font-bold uppercase"></span></div>
+            </div>
+            <div class="flex flex-col gap-1">
+                <div class="flex"><span class="w-32 font-semibold">Periode</span>: <span id="slip-period" class="ml-2"></span></div>
+                <div class="flex"><span class="w-32 font-semibold">Status Kerja</span>: <span id="emp-status" class="ml-2">Tetap</span></div>
+            </div>
+        </div>
+
+        <div class="border border-black">
+            <div class="grid grid-cols-2 bg-gray-50 font-bold border-b border-black text-center">
+                <div class="border-r border-black py-2">PENGHASILAN (EARNINGS)</div>
+                <div class="py-2">POTONGAN (DEDUCTIONS)</div>
+            </div>
+            
+            <div class="grid grid-cols-2 min-h-[150px]">
+                <div class="border-r border-black p-4 text-sm space-y-2" id="list-earnings"></div>
+                <div class="p-4 text-sm space-y-2" id="list-deductions"></div>
+            </div>
+
+            <div class="grid grid-cols-2 border-t border-black font-bold text-sm">
+                <div class="border-r border-black p-2 flex justify-between bg-gray-50">
+                    <span>Total Bruto</span>
+                    <span id="total-earnings"></span>
+                </div>
+                <div class="p-2 flex justify-between bg-gray-50 text-red-600">
+                    <span>Total Potongan</span>
+                    <span id="total-deductions"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 bg-gray-900 text-white p-4 flex justify-between items-center">
+            <div>
+                <p class="text-xs uppercase">Gaji Bersih (Take Home Pay)</p>
+                <p class="text-[10px] italic text-gray-400" id="terbilang"></p>
+            </div>
+            <div class="text-2xl font-bold" id="thp-amount"></div>
+        </div>
+
+        <div class="mt-12 grid grid-cols-3 text-center text-xs">
+            <div>
+                <p class="mb-20 font-bold">Penerima,</p>
+                <p class="border-b border-gray-400 inline-block px-8 font-bold" id="sign-name"></p>
+            </div>
+            <div></div>
+            <div>
+                <p class="mb-4 font-bold" id="print-date"></p>
+                <p class="mb-16 font-bold uppercase" id="comp-label"></p>
+                <p class="border-b border-gray-400 inline-block px-8 font-bold text-gray-400 italic">(Stempel Perusahaan)</p>
+                <p class="mt-1 font-bold">Divisi HRD & Keuangan</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data JSON (Bisa dipindah ke file eksternal jika mau)
+        const data = {
+            "perusahaan": {
+                "nama": "PT BANGKET COF MEDIA",
+                "bidang": "Application Dev • Advertising • Networking • Starlink Installation",
+                "alamat": "Jerowaru, Lombok Timur, Indonesia"
+            },
+            "slip_detail": {
+                "nomor_referensi": "BCM/SLP/2026/03/089",
+                "periode": "Februari 2026",
+                "tanggal_cetak": "01 Maret 2026"
+            },
+            "karyawan": {
+                "nama": "Falahw",
+                "jabatan": "Senior Network Engineer & Web Developer",
+                "status": "Pegawai Tetap"
+            },
+            "penghasilan": {
+                "Gaji Pokok": 8500000,
+                "Tunjangan Jabatan": 1500000,
+                "Tunjangan Transport": 1000000,
+                "Bonus Proyek": 500000
+            },
+            "potongan": {
+                "BPJS Kesehatan (1%)": 110000,
+                "BPJS Ketenagakerjaan (2%)": 150000,
+                "PPh 21": 0
+            }
+        };
+
+        function formatRupiah(num) {
+            return "Rp " + num.toLocaleString('id-ID');
+        }
+
+        // Render Data
+        document.getElementById('comp-name').innerText = data.perusahaan.nama;
+        document.getElementById('comp-fields').innerText = data.perusahaan.bidang;
+        document.getElementById('comp-address').innerText = data.perusahaan.alamat;
+        document.getElementById('comp-label').innerText = data.perusahaan.nama;
+        
+        document.getElementById('slip-ref').innerText = "Ref: " + data.slip_detail.nomor_referensi;
+        document.getElementById('slip-period').innerText = data.slip_detail.periode;
+        document.getElementById('print-date').innerText = "Jerowaru, " + data.slip_detail.tanggal_cetak;
+
+        document.getElementById('emp-name').innerText = data.karyawan.nama;
+        document.getElementById('sign-name').innerText = data.karyawan.nama;
+        document.getElementById('emp-pos').innerText = data.karyawan.jabatan;
+        document.getElementById('emp-status').innerText = data.karyawan.status;
+
+        let totalE = 0;
+        let earnHtml = "";
+        for (let item in data.penghasilan) {
+            totalE += data.penghasilan[item];
+            earnHtml += `<div class="flex justify-between"><span>${item}</span><span>${formatRupiah(data.penghasilan[item])}</span></div>`;
+        }
+        document.getElementById('list-earnings').innerHTML = earnHtml;
+        document.getElementById('total-earnings').innerText = formatRupiah(totalE);
+
+        let totalD = 0;
+        let deductHtml = "";
+        for (let item in data.potongan) {
+            totalD += data.potongan[item];
+            deductHtml += `<div class="flex justify-between"><span>${item}</span><span>${formatRupiah(data.potongan[item])}</span></div>`;
+        }
+        document.getElementById('list-deductions').innerHTML = deductHtml;
+        document.getElementById('total-deductions').innerText = formatRupiah(totalD);
+
+        const thp = totalE - totalD;
+        document.getElementById('thp-amount').innerText = formatRupiah(thp);
+        document.getElementById('terbilang').innerText = "# Sebelas Juta Dua Ratus Empat Puluh Ribu Rupiah #";
+    </script>
+</body>
+</html>
